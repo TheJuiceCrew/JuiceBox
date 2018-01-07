@@ -9,7 +9,7 @@ void setup() {
 
   Serial.begin(9600);
   Serial.println ("");
-  Serial.print ("Matriz Principal");
+  Serial.print ("----------------------Matriz Principal----------------------------");
   Serial.println ("");
 
 }
@@ -21,11 +21,19 @@ void loop() {
 
   for (int a = 0; a < 13; a++){
     Serial.print ("[");
+    Serial.print (" ");
+    Serial.print (" ");
+    Serial.print (" ");
+    Serial.print (" ");
     for (int b = 0; b < 13; b++) {
       Serial.print (matriz_Main[a][b]);
+      Serial.print (" ");
+      Serial.print (" ");
+      Serial.print (" ");
+      Serial.print (" ");
     }
     Serial.print ("]");
-    Serial.println("");
+    Serial.println(" ");
   }
 }
 
