@@ -3,39 +3,42 @@
 const int linhaMax = 13;
 const int colunaMax = 13;
 int matriz_Main[linhaMax][colunaMax];
+bool saida = true;
 
 void setup() {
   // put your setup code here, to run once:
 
   Serial.begin(9600);
-  Serial.println ("");
+  Serial.println (" ");
   Serial.print ("----------------------Matriz Principal----------------------------");
-  Serial.println ("");
+  Serial.println (" ");
 
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
 
-  funcaoRetornaMatriz();
-
-  for (int a = 0; a < 13; a++){
-    Serial.print ("[");
-    Serial.print (" ");
-    Serial.print (" ");
-    Serial.print (" ");
-    Serial.print (" ");
-    for (int b = 0; b < 13; b++) {
-      Serial.print (matriz_Main[a][b]);
+  while (saida){
+    funcaoRetornaMatriz();
+    for (int a = 0; a < 13; a++){
+      Serial.print ("[");
       Serial.print (" ");
       Serial.print (" ");
       Serial.print (" ");
       Serial.print (" ");
+      for (int b = 0; b < 13; b++) {
+        Serial.print (matriz_Main[a][b]);
+        Serial.print (" ");
+        Serial.print (" ");
+        Serial.print (" ");
+        Serial.print (" ");
+       }
+      Serial.print ("]");
+      Serial.println(" ");
     }
-    Serial.print ("]");
-    Serial.println(" ");
-  }
-}
+     saida = false;
+   }
+ }
 
 void funcaoRetornaMatriz(){
 
