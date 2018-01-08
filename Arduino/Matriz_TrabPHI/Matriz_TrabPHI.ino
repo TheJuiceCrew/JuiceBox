@@ -9,9 +9,9 @@ void setup() {
   // put your setup code here, to run once:
 
   Serial.begin(9600);
-  Serial.println ("");
+  Serial.println (" ");
   Serial.print ("----------------------Matriz Principal----------------------------");
-  Serial.println ("");
+  Serial.println (" ");
 
 }
 
@@ -20,7 +20,6 @@ void loop() {
 
   while (saida){
     funcaoRetornaMatriz();
-
     for (int a = 0; a < 13; a++){
       Serial.print ("[");
       Serial.print (" ");
@@ -33,13 +32,13 @@ void loop() {
         Serial.print (" ");
         Serial.print (" ");
         Serial.print (" ");
-      }
+       }
       Serial.print ("]");
       Serial.println(" ");
     }
-    saida = false;
-  }
-}
+     saida = false;
+   }
+ }
 
 void funcaoRetornaMatriz(){
 
