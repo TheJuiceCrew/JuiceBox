@@ -51,3 +51,31 @@ Marcar com um (✓) ao lado dos ícones que já estiverem prontos e upados em fo
 Há de ser definido um identificador de mensagem com início e fim com algum símbolo como '#' ou '*'
 Tanto para a comunicação serial entre os arduinos quanto para a comunicação MQTT
 
+*ESPECIFICAÇÕES DO DHT22:
+Especificações:
+– Modelo: AM2302 (datasheet)
+– Tensão de operação: 3-5VDC (5,5VDC máximo)
+– Faixa de medição de umidade: 0 a 100% UR
+– Faixa de medição de temperatura: -40º a +80ºC
+– Corrente: 2,5mA max durante uso, em stand by de 100uA a 150 uA
+– Precisão de umidade de medição: ± 2,0% UR
+– Precisão de medição de temperatura: ± 0,5 ºC
+– Resolução: 0,1
+– Tempo de resposta: 2s
+– Dimensões: 25 x 15 7mm (sem terminais)
+
+*ESPECIFICAÇÕES DO RTC DS3231:
+Especificações:
+
+Tensão de operação: 3,3-5V
+Chip: DS3231 (datasheet)
+Trabalha com segundos, minutos, horas, dias da semana, dias do mês, meses e anos (de 2000 a 2099)
+Sensor de temperatura com ± 3 °C de exatidão.
+Chip de memória: AT24C32 (capacidade de 32K bytes que podem ser usadas como RAM estendida do microcontrolador)
+Interface I2C
+Circuito de detecção de falha de energia
+Consome menos de 500 nA no modo bateria com oscilador em funcionamento
+Faixa de temperatura: 0 a 40°C
+Dimensões: 38 x 22 x 14mm
+Peso: 8g
+
