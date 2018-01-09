@@ -64,6 +64,7 @@ Especificações:
 – Tempo de resposta: 2s
 – Dimensões: 25 x 15 7mm (sem terminais)
 
+
 *ESPECIFICAÇÕES DO RTC DS3231:
 Especificações:
 
@@ -78,4 +79,14 @@ Consome menos de 500 nA no modo bateria com oscilador em funcionamento
 Faixa de temperatura: 0 a 40°C
 Dimensões: 38 x 22 x 14mm
 Peso: 8g
+
+Recursos – Principais Funções
+
+rtc.setDOW(MONDAY)  – Escreve o dia da semana em inglês
+rtc.setTime(15, 29, 0)      – Escreve as horas no formato 24 horas, hh, mm, ss
+rtc.setDate(20, 3, 2017)  – Escreve a data de acordo com o sistema que utilizas DD, MM, AAAA
+rtc.getDOWStr()               – Le o dia da semana
+rtc.getDateStr()                – Le a data
+rtc.getTimeStr()                – Le as horas
+rtc.getTemp()                   – Le a temperatura
 
