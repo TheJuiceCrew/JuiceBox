@@ -96,17 +96,17 @@ void funcaoRetornaMatriz(){
   }
   for (int i = 0; i < 5; i++) {
     for (int j = 0; j < 3; j++) {
-      matriz_Main[i+6][j+1] = matriz_P4[i][j];
+      matriz_Main[i+7][j+1] = matriz_P4[i][j];
     }
   }
   for (int i = 0; i < 5; i++) {
     for (int j = 0; j < 3; j++){
-      matriz_Main[i+6][j+5] = matriz_P5[i][j];
+      matriz_Main[i+7][j+5] = matriz_P5[i][j];
     }
   }
   for (int i = 0; i < 5; i++) {
     for (int j = 0; j < 3; j++){
-      matriz_Main[i+6][j+9] = matriz_P6[i][j];
+      matriz_Main[i+7][j+9] = matriz_P6[i][j];
     }
   }
 }
