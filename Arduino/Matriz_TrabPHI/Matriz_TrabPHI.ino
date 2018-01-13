@@ -9,9 +9,9 @@ void setup() {
   // put your setup code here, to run once:
 
   Serial.begin(9600);
-  Serial.println (" ");
+  Serial.println ("");
   Serial.print ("----------------------Matriz Principal----------------------------");
-  Serial.println (" ");
+  Serial.println ("");
 
 }
 
@@ -20,6 +20,7 @@ void loop() {
 
   while (saida){
     funcaoRetornaMatriz();
+
     for (int a = 0; a < 13; a++){
       Serial.print ("[");
       Serial.print (" ");
@@ -32,50 +33,56 @@ void loop() {
         Serial.print (" ");
         Serial.print (" ");
         Serial.print (" ");
-       }
+      }
       Serial.print ("]");
       Serial.println(" ");
     }
-     saida = false;
-   }
- }
+    saida = false;
+  }
+}
 
 void funcaoRetornaMatriz(){
 
-  bool matriz_P1[5][3] = { { 1,0,0 },
+  //1
+  bool matriz_P1[5][3] = { { 0,1,0 },
+                           { 1,1,0 },
                            { 0,1,0 },
-                           { 0,0,1 },
-                           { 0,1,0 } };
-  
-  bool matriz_P2[5][3] = { { 1,0,0 },
-                           { 1,0,0 },
-                           { 1,0,0 },
-                           { 1,0,0 },
-                           { 1,0,0 } };
-                         
-  bool matriz_P3[5][3] = { { 0,1,0 },
                            { 0,1,0 },
-                           { 0,1,1 },
-                           { 0,1,0 },
-                           { 0,1,0 } };
-                         
-  bool matriz_P4[5][3] = { { 0,0,1 },
-                           { 0,0,1 },
-                           { 0,0,0 },
-                           { 0,0,1 },
-                           { 0,0,1 } };
-
-  bool matriz_P5[5][3] = { { 0,0,0 },
-                           { 0,1,0 },
-                           { 0,0,0 },
-                           { 1,1,1 },
                            { 1,1,1 } };
-                           
-  bool matriz_P6[5][3] = { { 0,0,0 },
+
+  //8
+  bool matriz_P2[5][3] = { { 1,1,1 },
+                           { 1,0,1 },
+                           { 1,1,1 },
+                           { 1,0,1 },
+                           { 1,1,1 } };
+
+  //Grau                       
+  bool matriz_P3[5][3] = { { 1,0,1 },
+                           { 1,0,1 },
                            { 1,1,1 },
                            { 0,0,0 },
+                           { 1,1,1 } };
+
+  //2                       
+  bool matriz_P4[5][3] = { { 1,1,1 },
+                           { 0,0,1 },
                            { 1,1,1 },
-                           { 0,0,1 } };
+                           { 1,0,0 },
+                           { 1,1,1 } };
+
+  //5
+  bool matriz_P5[5][3] = { { 1,1,1 },
+                           { 1,0,0 },
+                           { 1,1,1 },
+                           { 0,0,1 },
+                           { 1,1,1 } };
+  //%                         
+  bool matriz_P6[5][3] = { { 1,0,1 },
+                           { 0,0,1 },
+                           { 0,1,0 },
+                           { 1,0,0 },
+                           { 1,0,1 } };
 
 
 
