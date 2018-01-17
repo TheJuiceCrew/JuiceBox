@@ -74,6 +74,9 @@ void setup() {
 
   //Inicia a comunicação serial numa taxa de 115200 bauds/s
   Serial.begin(115200);
+  Serial1.begin(115200);
+
+  //Armazena o tempo atual em ms desde que o microcontrolador começou a operar
   time = millis();
 }
 
@@ -214,11 +217,11 @@ void montarHora(int horas, int minutos, int type) {
   }
 
   //Debug
-//  Serial.print(hora1);
-//  Serial.print(hora2);
-//  Serial.print(":");
-//  Serial.print(minuto1);
-//  Serial.println(minuto2);
+  //  Serial.print(hora1);
+  //  Serial.print(hora2);
+  //  Serial.print(":");
+  //  Serial.print(minuto1);
+  //  Serial.println(minuto2);
 
   if (type == 1) {
     montaMatriz(retornaNumero(hora1), retornaNumero(hora2), matrizHoras, retornaNumero(minuto1), retornaNumero(minuto2), matrizMinutos);
@@ -381,23 +384,79 @@ void montaNoti(bool icone[13][13]) {
   }
 }
 
+//Função que monitora a serial e vê se uma mensagem válida é recebida
+//Caso uma mensagem válida tenha sido recebida o bool de notificação vai para true
+//E o código do app correspondente é setado
+//Argumentos: Nenhum
+//Retorna: nada
 void checaNoti() {
   String texto;
   long recebido;
-  if (Serial.available()) {
-    if (Serial.read() == '#') {
-      texto = Serial.readStringUntil('*');
-    }
 
-    recebido = texto.toInt();
-    Serial.println(texto);
-    if (recebido >= 0 && recebido <= 4) {
-      noti = true;
-      codigoApp = (int) recebido;
-      Serial.println(codigoApp);
-    }
+  if (Serial1.available()) {
+    if (Serial1.read() == '#') {
+      texto = Serial1.readStringUntil('*');
+      int str_len = texto.length() + 1;
+      char payload[str_len];
+      texto.toCharArray(payload, str_len);
+      Serial.println(texto);
 
+      int um = 0;
+      int dois = 0;
+
+      for (int i = 0; i < (sizeof(payload)); i++) {
+
+        if (payload[i] == '/') {
+          if (um == 0) {
+
+            um = i;
+          }
+
+          else if (dois == 0) {
+            dois = i;
+          }
+        }
+
+      }
+
+      Serial.println(um);
+      Serial.println(dois);
+      String appCode = texto.substring(0, um);
+      String strTemp = texto.substring(um + 1, dois);
+      String strUmi = texto.substring(dois + 1, texto.length());
+      Serial.print("Codigo: ");
+      Serial.println(appCode);
+      Serial.print("Temperatura: ");
+      Serial.println(strTemp);
+      Serial.print("Umidade: ");
+      Serial.println(strUmi);
+
+      
+      codigoApp = appCode.toInt();
+      
+      if(codigoApp != 99){
+        noti = true;
+      }
+      temp = strTemp.toInt();
+      umi = strUmi.toInt();
+
+    }
   }
+
+  //  if (Serial.available()) {
+  //    if (Serial.read() == '#') {
+  //      texto = Serial.readStringUntil('*');
+  //    }
+  //
+  //    recebido = texto.toInt();
+  //    Serial.println(texto);
+  //    if (recebido >= 0 && recebido <= 4) {
+  //      noti = true;
+  //      codigoApp = (int) recebido;
+  //      Serial.println(codigoApp);
+  //    }
+  //
+  //  }
 }
 
 
