@@ -49,3 +49,29 @@ void RTCFuncao(){
   delay(1000);
 }
 
+void Inteiro() {
+  dataehora = rtc.getDateTime();
+
+  int hora, minuto, dia, mes;
+
+  hora = dataehora.hour;
+  minuto = dataehora.minute;
+
+  dia = dataehora.day;
+  mes = dataehora.month;
+
+  if (scanf("data", data)) {
+    Serial.print(dia);
+    Serial.print("/");
+    Serial.println(" ");
+    Serial.print(mes);
+  }
+  if (scanf("tempo", tempo)) {
+    Serial.print(hora);
+    Serial.print("h");
+    Serial.println(" ");
+    Serial.print(minuto);
+    Serial.print("'");
+  }
+}
+
