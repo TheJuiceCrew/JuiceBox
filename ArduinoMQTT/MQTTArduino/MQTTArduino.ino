@@ -6,6 +6,12 @@
 #include <WiFiEspServer.h>
 #include <WiFiEspUdp.h>
 #include "SoftwareSerial.h"
+#include <DHT.h>
+
+#define DHTPIN 10     // what digital pin we're connected to
+#define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
+
+DHT dht(DHTPIN, DHTTYPE);
 
 
 /************************* Configuração do WIFI *********************************/
@@ -34,7 +40,7 @@ Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO
 //Adafruit_MQTT_Publish exemplo = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/casa/exemplo");
 
 // Configura um FEED chamado notify para se inscrever no tópico "/cubo"
-Adafruit_MQTT_Subscribe notify = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "cubo"); //Subscription
+Adafruit_MQTT_Subscribe notify = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "thejuicecrew/juicebox/notification"); //Subscription
 
 /*************************** Código ************************************/
 
@@ -73,6 +79,9 @@ void setup() {
 
   //Configura a inscrição no tópico
   mqtt.subscribe(&notify);
+  pinMode(10, INPUT_PULLUP);
+  dht.begin();
+  
 }
 
 uint32_t x = 0;
@@ -88,7 +97,7 @@ void loop() {
 
 
   Adafruit_MQTT_Subscribe *subscription;
-  while ((subscription = mqtt.readSubscription(300))) {
+  while ((subscription = mqtt.readSubscription(500))) {
     if (subscription == &notify) {
       //Serial.print(F("Got: "));
       //Serial.println((char *)notify.lastread);
@@ -110,7 +119,7 @@ void loop() {
     }
   }
 
-  //Pegar aqui a leitura do DHT e montar os inteiros de umidade e temperatura
+  updateDHT(); //Pegar aqui a leitura do DHT e montar os inteiros de umidade e temperatura
   enviar = "";
   enviar += "#";
   enviar += appCode;
@@ -151,5 +160,27 @@ void MQTT_connect() {
     }
   }
   Serial.println("Broker MQTT Conectado!");
+}
+
+void updateDHT(){
+
+  // Reading temperature or humidity takes about 250 milliseconds!
+  // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
+  int h = (int) dht.readHumidity();
+  if(h >99){
+    h = 99;
+  }
+  // Read temperature as Celsius (the default)
+  int t = (int) dht.readTemperature();
+
+  // Check if any reads failed and exit early (to try again).
+  if (isnan(h) || isnan(t)) {
+    Serial.println("Failed to read from DHT sensor!");
+    return;
+  }
+
+  temp = t;
+  umi = h;
+ 
 }
 
