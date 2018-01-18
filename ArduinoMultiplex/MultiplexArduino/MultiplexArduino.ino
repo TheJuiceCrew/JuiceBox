@@ -1,3 +1,5 @@
+#include <DS3231.h>
+
 const int SCR_WIDTH = 13; //Largura da tela
 const int SCR_HEIGHT = 13; //Altura da tela
 
@@ -61,6 +63,8 @@ bool noti = false; //Setado para true quando uma notificação chega e volta par
 int codigoApp = 2; //Codigos pros icones de notificação
 // 0 pra app qualquer, 1 para facebook, 2 para whatsapp, 3 para instagram e 4 para email
 
+DS3231 rtc(A0, A1);
+
 void setup() {
 
   // Define os pinos do display como entradas
@@ -78,6 +82,8 @@ void setup() {
 
   //Armazena o tempo atual em ms desde que o microcontrolador começou a operar
   time = millis();
+
+   rtc.begin();
 }
 
 void loop() {
@@ -85,6 +91,7 @@ void loop() {
   while ((millis() - time < 5000) && !noti) {
 
     checaNoti();
+    rtcUpdate();
 
     switch (telaAtual) {
       case 1:
@@ -161,7 +168,7 @@ void draw() {
 
     for (int j = 0; j < SCR_WIDTH; j++) {
       digitalWrite(colu[j],  matrizScreen[i][j]);
-      delayMicroseconds(90);
+      delayMicroseconds(50);
       digitalWrite(colu[j], LOW);
     }
   }
@@ -457,6 +464,19 @@ void checaNoti() {
   //    }
   //
   //  }
+}
+
+void rtcUpdate(){
+  String horasminutos = rtc.getTimeStr(FORMAT_SHORT);
+  String horasSTR = horasminutos.substring(0, 2);
+  String minutosSTR = horasminutos.substring(3);
+  horas = (int) horasSTR.toInt();
+  minutos = (int) minutosSTR.toInt();
+  String diamesano = rtc.getDateStr();
+  String diaSTR = diamesano.substring(0, 2);
+  String mesSTR = diamesano.substring(3, 5);
+  dia = (int) diaSTR.toInt();
+  mes = (int) mesSTR.toInt(); 
 }
 
 
