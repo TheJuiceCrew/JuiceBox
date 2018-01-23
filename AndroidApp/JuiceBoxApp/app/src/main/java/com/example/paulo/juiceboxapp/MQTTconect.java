@@ -23,11 +23,11 @@ public class MQTTconect {
 
 
     private MqttAndroidClient mqttAndroidClient;                //objeto Cliente MQTT do Android
-    private String serverAndress = "tcp://iot.eclipse.org";     //variavel para armazenar o endereço do servidor
+    private String serverAndress = "tcp://localhost:1883";     //variavel para armazenar o endereço do servidor
     private String clientID;                                    //armazena o identificador do cliente MQTT
     private String username = "alberto";                        //armazena o nome de usuário
     private String password = "null";                           //armazena a senha de conexão do broker
-    private String publishTopic = "thejuicecrew/juicebox/notification";           //Tópico para o cliente subescrever no servidor
+    private String publishTopic = "box";           //Tópico para o cliente subescrever no servidor
 
 
     public MQTTconect(Context contexto, MqttCallback mqttcallback) {
@@ -42,12 +42,10 @@ public class MQTTconect {
 
     }
 
-    public void sendMessage (String topic,String StringMessage) {
+    public void sendMessage (String StringMessage) {
         if (isconnected()) {
-            MqttMessage message = new MqttMessage();
-            message.setPayload(StringMessage.getBytes());
             try {
-                mqttAndroidClient.publish(topic,message);
+                mqttAndroidClient.publish(publishTopic,StringMessage.getBytes(),1,false);
             } catch (MqttException e) {
                 e.printStackTrace();
             }
