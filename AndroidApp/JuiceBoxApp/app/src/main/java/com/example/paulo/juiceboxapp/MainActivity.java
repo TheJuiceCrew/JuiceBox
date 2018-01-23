@@ -1,15 +1,22 @@
 package com.example.paulo.juiceboxapp;
 
         import android.Manifest;
-        import android.app.Activity;
+        import android.content.BroadcastReceiver;
+        import android.content.ComponentName;
+        import android.content.Context;
+        import android.content.DialogInterface;
+        import android.content.Intent;
+        import android.content.IntentFilter;
         import android.content.pm.PackageManager;
         import android.graphics.Color;
-        import android.os.Build;
         import android.os.Environment;
+        import android.provider.Settings;
         import android.support.v4.app.ActivityCompat;
         import android.support.v4.content.ContextCompat;
+        import android.support.v7.app.AlertDialog;
         import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
+        import android.text.TextUtils;
         import android.util.Log;
         import android.view.View;
         import android.widget.Button;
@@ -46,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements MqttCallback,IMqt
     private Button btn_whatsapp;
     private Button btn_instagram;
 
-    private MQTTconect mqtTconect;
+    public static MQTTconect mqtTconect;
     private Checkstatus checkStatus;
     private final int  MY_PERMISSIONS_REQUEST_ACESS_NETWORK_STATE = 100;
     private final int MY_PERMISSIONS_REQUEST_INTERNET = 101;
@@ -57,6 +64,11 @@ public class MainActivity extends AppCompatActivity implements MqttCallback,IMqt
     private Button btn_email;
     private Button btn_generic_app;
     private EditText editTopic;
+
+    private static final String ENABLED_NOTIFICATION_LISTENERS = "enabled_notification_listeners";
+    private static final String ACTION_NOTIFICATION_LISTENER_SETTINGS = "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS";
+    private AlertDialog enableNotificationListenerAlertDialog;
+    private SendNotificationBroadcastReceiver sendNotificationBroadcastReceiver;
 
 
     @Override
@@ -164,6 +176,37 @@ public class MainActivity extends AppCompatActivity implements MqttCallback,IMqt
         } else {
             requestExternalStoragePermission();
         }
+
+        // If the user did not turn the notification listener service on we prompt him to do so
+        if(!isNotificationServiceEnabled()){
+            enableNotificationListenerAlertDialog = buildNotificationServiceAlertDialog();
+            enableNotificationListenerAlertDialog.show();
+        }
+
+        // Finally we register a receiver to tell the MainActivity when a notification has been received
+        sendNotificationBroadcastReceiver = new SendNotificationBroadcastReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.example.paulo.juiceboxapp.JuiceBoxNotificationListenerService");
+        registerReceiver(sendNotificationBroadcastReceiver,intentFilter);
+
+    }
+
+    private boolean isNotificationServiceEnabled(){
+        String pkgName = getPackageName();
+        final String flat = Settings.Secure.getString(getContentResolver(),
+                ENABLED_NOTIFICATION_LISTENERS);
+        if (!TextUtils.isEmpty(flat)) {
+            final String[] names = flat.split(":");
+            for (int i = 0; i < names.length; i++) {
+                final ComponentName cn = ComponentName.unflattenFromString(names[i]);
+                if (cn != null) {
+                    if (TextUtils.equals(pkgName, cn.getPackageName())) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private boolean persistentStoragePermissionsGranted () {
@@ -179,6 +222,26 @@ public class MainActivity extends AppCompatActivity implements MqttCallback,IMqt
         }
 
         return false;
+    }
+
+    private AlertDialog buildNotificationServiceAlertDialog(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle("Ativar serviço de notificação?");
+        alertDialogBuilder.setMessage("precisamos ativar o serviço de nmotificação para a juicebox funcionar corretamente");
+        alertDialogBuilder.setPositiveButton("sim :>",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        startActivity(new Intent(ACTION_NOTIFICATION_LISTENER_SETTINGS));
+                    }
+                });
+        alertDialogBuilder.setNegativeButton("naum >:(",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // If you choose to not enable the notification listener
+                        // the app. will not work as expected
+                    }
+                });
+        return(alertDialogBuilder.create());
     }
 
     private void setupMoquetteServer() {
@@ -301,7 +364,8 @@ public class MainActivity extends AppCompatActivity implements MqttCallback,IMqt
     protected void onDestroy() {
         super.onDestroy();
         checkStatus.off();
-        mqtTconect.Disconnect();
+        if (mqtTconect.isconnected()) mqtTconect.Disconnect();
+        unregisterReceiver(sendNotificationBroadcastReceiver);
     }
 
     @Override
@@ -327,6 +391,32 @@ public class MainActivity extends AppCompatActivity implements MqttCallback,IMqt
     @Override
     public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
 
+    }
+
+    /**
+     * Change Intercepted Notification Image
+     * Changes the MainActivity image based on which notification was intercepted
+     * @param notificationCode The intercepted notification code
+     */
+    private void sendNotification(String notificationCode){
+        Log.d(TAG,"Notificação recebida: " + notificationCode);
+        if (mqtTconect.isconnected()) {
+            mqtTconect.sendMessage(notificationCode);
+        }
+    }
+
+    /**
+     * Image Change Broadcast Receiver.
+     * We use this Broadcast Receiver to notify the Main Activity when
+     * a new notification has arrived, so it can properly change the
+     * notification image
+     * */
+    public class SendNotificationBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String receivedNotificationCode = intent.getStringExtra("Notification Code");
+            sendNotification(receivedNotificationCode);
+        }
     }
 
 
